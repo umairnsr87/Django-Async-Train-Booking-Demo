@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+
+{% block css %}
+
+table, th, td {
+  border: 1px solid black;
+}
+{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-info">{{message}}</div>
+{% endfor %}
+{% endif %}
+
+<!--
+<div class="container-fluid">
+    <h3>Your Username is :{{ request.session.username }}</h3>
+    <h3>Your Email is :{{ request.session.email }}</h3>
+</div>
+-->
+
+<div class="container-fluid">
+
+
+    <button type="button" class="btn btn-primary" onclick="asd(0)" id="insert1" value="Book a train">Hide Booking</button>
+    <button type="button" class="btn btn-primary" onclick="asd(1)" id="insert" value="Book a train">Make Booking</button>
+
+
+    <div class="col-md-6" >
+        <form  id="booking" method="POST" style="display:none;">
+            {% csrf_token %}
+
+            <select class="form-control" name="source">
+                <option >Select your source</option>
+                {% for val in trains_available %}
+                <option value="{{val.source}}">{{val.source}}</option>
+                {% endfor %}
+            </select>
+            <br>
+
+            <select class="form-control" name="destination" >
+                <option >Select your destination</option>
+                {% for val in trains_available %}
+                <option value="{{val.destination}}">{{val.destination}}</option>
+                {% endfor %}
+            </select>
+            <br>
+
+            <input class="form-control" type="date" name="date">
+            </br>
+
+            <input class="form-control" type="time" name="time">
+            <br>
+
+            <input class="form-control" type="text" placeholder="Enter the number of passengers" name="number">
+
+            <input class="btn btn-primary" value="Create Booking" type="submit">
+
+
+
+
+        </form>
+    </div>
+    <script>
+
+    window.setTimeout(function () {
+    location.href = "http://127.0.0.1:8000/profile";
+}, 30000);
+
+  window.onload = function() {
+
+    document.getElementById("asd").style.display = "none";
+
+  };
+
+  function asd(a) {
+
+    if (a == 1) {
+      document.getElementById("booking").style.display = "block";
+    } else {
+      document.getElementById("booking").style.display = "none";
+    }
+
+  }
+</script>
+</div>
+
+
+<br>
+<div class="col-md-8" style="width:100%">
+    <h3>Bookings</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>name</th>
+            <th>email</th>
+            <th>source</th>
+            <th>destination</th>
+            <th>time</th>
+            <th>number of passengers</th>
+            <th>Status</th>
+            <th>Train name</th>
+            <th>Train id</th>
+        </tr>
+        </thead>
+        {% for booking in booking_created %}
+        <tr>
+            <td>{{booking.username}}</td>
+            <td>{{booking.email}}</td>
+            <td>{{booking.source}}</td>
+            <td>{{booking.destination}}</td>
+            <td>{{booking.date}}</td>
+            <td>{{booking.passengers}}</td>
+
+            {% if booking.status == True %}
+            <td>Booking confirmed</td>
+            {% else %}
+            <td>Booking not confirmed</td>
+            {% endif %}
+
+            {% if booking.train_name  %}
+            <td>{{booking.train_name}}</td>
+            {% else %}
+            <td>Booking not confirmed</td>
+            {% endif %}
+
+            {% if booking.train_id  %}
+            <td>{{booking.train_id}}</td>
+            {% else %}
+            <td>Booking not confirmed</td>
+            {% endif %}
+
+
+
+
+        </tr>
+        {% endfor %}
+
+    </table>
+</div>
+
+{% endblock %}
